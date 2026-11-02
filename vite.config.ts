@@ -13,8 +13,9 @@ export default defineConfig(() => {
       {
         name: 'copy-404-for-github-pages',
         closeBundle() {
-          const indexPath = path.resolve(__dirname, 'dist/index.html');
-          const notFoundPath = path.resolve(__dirname, 'dist/404.html');
+          const rootDir = process.cwd();
+          const indexPath = path.resolve(rootDir, 'dist/index.html');
+          const notFoundPath = path.resolve(rootDir, 'dist/404.html');
           if (fs.existsSync(indexPath)) {
             fs.copyFileSync(indexPath, notFoundPath);
           }
@@ -23,7 +24,7 @@ export default defineConfig(() => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(process.cwd(), '.'),
       },
     },
     server: {
