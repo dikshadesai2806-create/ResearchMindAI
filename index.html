@@ -48,6 +48,7 @@
             <li>Alternatively, run <code>npm run deploy</code> in your terminal and set Source branch to <strong>gh-pages</strong></li>
             <li>Avoid selecting branch <em>main</em> with folder <em>/ (root)</em>, as browsers cannot run uncompiled TypeScript directly.</li>
           </ol>
+          <div id="deploy-err-detail" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-bottom: 12px; word-break: break-all; font-family: monospace;"></div>
           <button onclick="window.location.reload()" style="background: #0284c7; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">Reload Application</button>
         </div>
       </div>
@@ -55,10 +56,21 @@
         @keyframes rm-spin { to { transform: rotate(360deg); } }
       </style>
       <script>
-        setTimeout(function() {
+        // Only display troubleshoot guidance if loading takes excessive time (> 6s) or if a script error occurs
+        var fallbackTimer = setTimeout(function() {
           var el = document.getElementById('deploy-troubleshoot-hint');
           if (el) el.style.display = 'block';
-        }, 3000);
+        }, 7000);
+
+        window.addEventListener('error', function(e) {
+          var el = document.getElementById('deploy-troubleshoot-hint');
+          var errDetail = document.getElementById('deploy-err-detail');
+          if (el) el.style.display = 'block';
+          if (errDetail && e && (e.message || e.filename)) {
+            errDetail.textContent = 'Detected Error: ' + (e.message || 'Script resource failed to load (' + (e.filename || 'asset') + ')');
+            errDetail.style.display = 'block';
+          }
+        });
       </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
