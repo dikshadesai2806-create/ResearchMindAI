@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, ChevronDown, Moon, Sun, User as UserIcon, LogOut, LogIn, UserPlus, BookOpen } from 'lucide-react';
+import { Search, ChevronDown, Moon, Sun, User as UserIcon, LogOut, LogIn, UserPlus, Menu } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export const Header: React.FC = () => {
@@ -12,6 +12,7 @@ export const Header: React.FC = () => {
     logout,
     setIsAuthModalOpen,
     setAuthModalMode,
+    toggleMobileMenu,
   } = useApp();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,13 +30,21 @@ export const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="w-full flex items-center justify-between px-6 py-4.5 bg-[#081020] dark:bg-[#081020] border-b border-[#142340] dark:border-[#142340] transition-colors duration-200">
-      {/* Brand Logo & Title */}
-      <div className="flex items-center gap-3.5">
-        <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-[#0d9488]/30 via-[#06b6d4]/20 to-[#0284c7]/20 border border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
-          {/* Custom Book Outline Icon matching reference image */}
+    <header className="w-full flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 bg-[#081020] dark:bg-[#081020] border-b border-[#142340] dark:border-[#142340] transition-colors duration-200 sticky top-0 z-30">
+      {/* Left: Mobile Menu Toggle + Brand Logo & Title */}
+      <div className="flex items-center gap-2 sm:gap-3.5">
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={toggleMobileMenu}
+          aria-label="Open navigation menu"
+          className="md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-[#131f37] border border-[#1e2f4f] transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        <div className="relative flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#0d9488]/30 via-[#06b6d4]/20 to-[#0284c7]/20 border border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.25)] flex-shrink-0">
           <svg
-            className="w-7 h-7 text-cyan-400 stroke-[1.8]"
+            className="w-5 h-5 sm:w-7 sm:h-7 text-cyan-400 stroke-[1.8]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -50,28 +59,28 @@ export const Header: React.FC = () => {
           </svg>
         </div>
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          <h1 className="text-base sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
             ResearchMind AI
           </h1>
-          <p className="text-xs font-medium text-slate-400 dark:text-slate-400">
+          <p className="hidden sm:block text-xs font-medium text-slate-400 dark:text-slate-400">
             AI-Powered Research & Literature Assistant
           </p>
         </div>
       </div>
 
       {/* Right Controls: Search, Theme Toggle, User Profile */}
-      <div className="flex items-center gap-4">
-        {/* Search Bar */}
-        <div className="relative w-80 md:w-96">
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Search Bar (responsive width) */}
+        <div className="relative w-28 xs:w-40 sm:w-56 md:w-80 lg:w-96 transition-all">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search papers, topics, keywords..."
-            className="w-full h-10 pl-4 pr-10 text-sm rounded-full bg-[#131f37] dark:bg-[#131f37] border border-[#1e2f4f] dark:border-[#1e2f4f] text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40 transition-all"
+            placeholder="Search papers..."
+            className="w-full h-9 sm:h-10 pl-3 sm:pl-4 pr-8 sm:pr-10 text-xs sm:text-sm rounded-full bg-[#131f37] dark:bg-[#131f37] border border-[#1e2f4f] dark:border-[#1e2f4f] text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40 transition-all"
           />
-          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-            <Search className="w-4 h-4" />
+          <div className="absolute right-2.5 sm:right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </div>
         </div>
 
@@ -80,26 +89,26 @@ export const Header: React.FC = () => {
           onClick={toggleTheme}
           aria-label="Toggle Theme"
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
-          className="flex items-center justify-center w-9 h-9 rounded-full bg-[#131f37] border border-[#1e2f4f] text-slate-300 hover:text-cyan-400 hover:border-cyan-500/40 transition-colors"
+          className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#131f37] border border-[#1e2f4f] text-slate-300 hover:text-cyan-400 hover:border-cyan-500/40 transition-colors flex-shrink-0"
         >
           {theme === 'dark' ? (
-            <Sun className="w-4 h-4 text-amber-400" />
+            <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
           ) : (
-            <Moon className="w-4 h-4 text-sky-400" />
+            <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400" />
           )}
         </button>
 
         {/* User Profile Pill & Dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative flex-shrink-0" ref={dropdownRef}>
           {user ? (
             <button
               onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2.5 py-1.5 px-2 rounded-full hover:bg-slate-800/60 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2.5 py-1 px-1 sm:py-1.5 sm:px-2 rounded-full hover:bg-slate-800/60 transition-colors cursor-pointer"
             >
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2563eb] text-white font-semibold text-sm shadow-sm">
+              <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#2563eb] text-white font-semibold text-xs sm:text-sm shadow-sm flex-shrink-0">
                 {user.avatarLetter}
               </div>
-              <span className="text-sm font-medium text-slate-100 max-w-[130px] truncate">
+              <span className="hidden sm:inline-block text-sm font-medium text-slate-100 max-w-[110px] md:max-w-[130px] truncate">
                 {user.name}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -110,10 +119,10 @@ export const Header: React.FC = () => {
                 setAuthModalMode('login');
                 setIsAuthModalOpen(true);
               }}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-600/30 hover:bg-cyan-600/40 border border-cyan-500/50 text-cyan-200 text-xs font-medium transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-600/30 hover:bg-cyan-600/40 border border-cyan-500/50 text-cyan-200 text-xs font-medium transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>Sign In</span>
+              <span className="hidden xs:inline">Sign In</span>
             </button>
           )}
 

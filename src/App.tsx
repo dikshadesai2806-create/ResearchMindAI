@@ -20,7 +20,7 @@ const DashboardContent: React.FC = () => {
   const { activeTab } = useApp();
 
   return (
-    <div className="flex-1 min-w-0 p-6 md:p-8 space-y-6 overflow-y-auto max-h-[calc(100vh-73px)]">
+    <div className="flex-1 min-w-0 p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 overflow-y-auto max-h-[calc(100vh-65px)] sm:max-h-[calc(100vh-73px)]">
       {activeTab === 'Dashboard' ? (
         <>
           {/* Top Hero Welcome Banner */}

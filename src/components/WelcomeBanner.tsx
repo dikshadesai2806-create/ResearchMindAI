@@ -47,7 +47,7 @@ export const WelcomeBanner: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full rounded-2xl bg-gradient-to-r from-[#091b3b] via-[#0d2654] to-[#0a1c3d] border border-[#1b3464] shadow-[0_8px_30px_rgb(0,0,0,0.35)] overflow-hidden p-6 md:p-8">
+    <div className="relative w-full rounded-2xl bg-gradient-to-r from-[#091b3b] via-[#0d2654] to-[#0a1c3d] border border-[#1b3464] shadow-[0_8px_30px_rgb(0,0,0,0.35)] overflow-hidden p-5 sm:p-6 md:p-8">
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -56,11 +56,11 @@ export const WelcomeBanner: React.FC = () => {
         {/* Left Column: Welcome text & CTA */}
         <div className="lg:col-span-5 space-y-4">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
               <span>Welcome, {firstName}!</span>
               <span className="inline-block animate-wiggle">👋</span>
             </h2>
-            <h3 className="text-base md:text-lg font-medium text-slate-100 mt-2 leading-snug">
+            <h3 className="text-sm sm:text-base md:text-lg font-medium text-slate-100 mt-2 leading-snug">
               Explore, Analyze and Understand Research Papers with AI.
             </h3>
           </div>
@@ -69,10 +69,10 @@ export const WelcomeBanner: React.FC = () => {
             Upload your documents, get intelligent summaries, ask questions and manage your research all in one place.
           </p>
 
-          <div className="pt-2">
+          <div className="pt-1 sm:pt-2">
             <button
               onClick={() => setIsUploadModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#00c4b4] to-[#0ea5e9] hover:from-[#00b3a4] hover:to-[#0284c7] text-slate-950 font-semibold text-sm shadow-[0_4px_16px_rgba(0,196,180,0.35)] active:scale-[0.98] transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#00c4b4] to-[#0ea5e9] hover:from-[#00b3a4] hover:to-[#0284c7] text-slate-950 font-semibold text-xs sm:text-sm shadow-[0_4px_16px_rgba(0,196,180,0.35)] active:scale-[0.98] transition-all cursor-pointer"
             >
               <span>Upload a Research Paper</span>
               <ArrowRight className="w-4 h-4 stroke-[2.2]" />
@@ -82,12 +82,12 @@ export const WelcomeBanner: React.FC = () => {
 
         {/* Center Column: 3D Books & Laptop Illustration */}
         <div className="lg:col-span-4 flex justify-center items-center py-2">
-          <HeroIllustration className="w-full max-w-[340px]" />
+          <HeroIllustration className="w-full max-w-[240px] sm:max-w-[300px] md:max-w-[340px]" />
         </div>
 
         {/* Right Column: Floating Feature Panel */}
-        <div className="lg:col-span-3 flex justify-end">
-          <div className="w-full max-w-[240px] rounded-2xl bg-[#0b1c3b]/80 backdrop-blur-md border border-[#1f3a6e] p-3.5 space-y-2.5 shadow-xl">
+        <div className="lg:col-span-3 flex justify-center lg:justify-end w-full">
+          <div className="w-full max-w-full sm:max-w-[280px] lg:max-w-[240px] rounded-2xl bg-[#0b1c3b]/80 backdrop-blur-md border border-[#1f3a6e] p-3.5 space-y-2.5 shadow-xl">
             {/* Feature 1: Summarize Papers */}
             <button
               onClick={handleSummarizeClick}
