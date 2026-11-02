@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Wiggle animation for waving hand in hero */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(14deg); }
+  75% { transform: rotate(-14deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 1.2s ease-in-out infinite;
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+/* Light Mode Theme Styles */
+html:not(.dark) body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html:not(.dark) header {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) header h1 {
+  color: #0f172a !important;
+}
+
+html:not(.dark) header input {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) aside {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) aside button:not(.bg-\[\#0d7477\]) {
+  color: #334155 !important;
+}
+
+html:not(.dark) aside button:not(.bg-\[\#0d7477\]):hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) main {
+  background-color: #f8fafc !important;
+}
+
+html:not(.dark) .bg-\[\#070e1b\] {
+  background-color: #f8fafc !important;
+}
+
+html:not(.dark) .bg-\[\#0a172e\],
+html:not(.dark) .bg-\[\#0c172e\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+html:not(.dark) .bg-\[\#0e1f3b\] {
+  background-color: #ffffff !important;
+  border-color: #bfdbfe !important;
+}
+
+html:not(.dark) .bg-\[\#0e2536\] {
+  background-color: #ffffff !important;
+  border-color: #99f6e4 !important;
+}
+
+html:not(.dark) .bg-\[\#191c3d\] {
+  background-color: #ffffff !important;
+  border-color: #ddd6fe !important;
+}
+
+html:not(.dark) .bg-\[\#232019\] {
+  background-color: #ffffff !important;
+  border-color: #fde68a !important;
+}
+
+html:not(.dark) .bg-\[\#07101f\] {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) .text-white {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html:not(.dark) .text-slate-300 {
+  color: #334155 !important;
+}
+
+html:not(.dark) .text-slate-400 {
+  color: #64748b !important;
+}
+
+html:not(.dark) .border-\[\#142749\],
+html:not(.dark) .border-\[\#142340\],
+html:not(.dark) .border-\[\#162744\],
+html:not(.dark) .border-\[\#13233f\],
+html:not(.dark) .border-\[\#142442\],
+html:not(.dark) .border-\[\#1a2d52\],
+html:not(.dark) .border-\[\#14364c\],
+html:not(.dark) .border-\[\#2a2656\],
+html:not(.dark) .border-\[\#1e345e\],
+html:not(.dark) .border-\[\#3c3423\] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Maintain rich visual contrast inside the Welcome Hero Banner */
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] {
+  background: linear-gradient(to right, #091b3b, #0d2654, #0a1c3d) !important;
+  border-color: #1b3464 !important;
+}
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] .text-white,
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] h2,
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] h3 {
+  color: #ffffff !important;
+}
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] p {
+  color: #cbd5e1 !important;
+}
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] .text-slate-200 {
+  color: #f1f5f9 !important;
+}
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] .bg-\[\#0b1c3b\]\/80 {
+  background-color: rgba(11, 28, 59, 0.85) !important;
+}
+html:not(.dark) .bg-gradient-to-r.from-\[\#091b3b\] .bg-\[\#0b1c3b\]\/80 span {
+  color: #e2e8f0 !important;
+}

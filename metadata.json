@@ -1,0 +1,6 @@
+{
+  "name": "ResearchMind AI",
+  "description": "AI-Powered Research & Literature Assistant for exploring, analyzing, and summarizing research papers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
