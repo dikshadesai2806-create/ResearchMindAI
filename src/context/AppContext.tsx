@@ -57,22 +57,46 @@ interface AppContextType {
   openAskAiWithPaper: (paperTitle?: string) => void;
 }
 
+const safeStorage = {
+  get: (key: string): string | null => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set: (key: string, value: string): void => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // storage blocked or full
+    }
+  },
+  remove: (key: string): void => {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // storage blocked
+    }
+  },
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Theme state: Dark is default
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    const saved = localStorage.getItem('researchmind_theme');
+    const saved = safeStorage.get('researchmind_theme');
     return (saved === 'light' || saved === 'dark') ? saved : 'dark';
   });
 
   // User state: checks authentication flag to prevent unauthorized rehydration
   const [user, setUser] = useState<User | null>(() => {
-    const authStatus = localStorage.getItem('researchmind_auth_status');
+    const authStatus = safeStorage.get('researchmind_auth_status');
     if (authStatus === 'unauthenticated') {
       return null;
     }
-    const saved = localStorage.getItem('researchmind_user');
+    const saved = safeStorage.get('researchmind_user');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -85,7 +109,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Papers state
   const [papers, setPapers] = useState<ResearchPaper[]>(() => {
-    const saved = localStorage.getItem('researchmind_papers');
+    const saved = safeStorage.get('researchmind_papers');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -98,7 +122,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Queries state
   const [queries, setQueries] = useState<AiQuery[]>(() => {
-    const saved = localStorage.getItem('researchmind_queries');
+    const saved = safeStorage.get('researchmind_queries');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -111,7 +135,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Notes state
   const [notes, setNotes] = useState<ResearchNote[]>(() => {
-    const saved = localStorage.getItem('researchmind_notes');
+    const saved = safeStorage.get('researchmind_notes');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -123,7 +147,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [summariesCount, setSummariesCount] = useState<number>(() => {
-    const saved = localStorage.getItem('researchmind_summaries_count');
+    const saved = safeStorage.get('researchmind_summaries_count');
     return saved ? parseInt(saved, 10) : 8;
   });
 
@@ -147,7 +171,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Sync theme with DOM and localStorage
   useEffect(() => {
-    localStorage.setItem('researchmind_theme', theme);
+    safeStorage.set('researchmind_theme', theme);
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
@@ -158,30 +182,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Sync papers
   useEffect(() => {
-    localStorage.setItem('researchmind_papers', JSON.stringify(papers));
+    safeStorage.set('researchmind_papers', JSON.stringify(papers));
   }, [papers]);
 
   // Sync queries
   useEffect(() => {
-    localStorage.setItem('researchmind_queries', JSON.stringify(queries));
+    safeStorage.set('researchmind_queries', JSON.stringify(queries));
   }, [queries]);
 
   // Sync notes
   useEffect(() => {
-    localStorage.setItem('researchmind_notes', JSON.stringify(notes));
+    safeStorage.set('researchmind_notes', JSON.stringify(notes));
   }, [notes]);
 
   // Sync summaries count
   useEffect(() => {
-    localStorage.setItem('researchmind_summaries_count', summariesCount.toString());
+    safeStorage.set('researchmind_summaries_count', summariesCount.toString());
   }, [summariesCount]);
 
   // Sync user
   useEffect(() => {
     if (user) {
-      localStorage.setItem('researchmind_user', JSON.stringify(user));
+      safeStorage.set('researchmind_user', JSON.stringify(user));
     } else {
-      localStorage.removeItem('researchmind_user');
+      safeStorage.remove('researchmind_user');
     }
   }, [user]);
 
@@ -195,15 +219,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const login = (newUser: User) => {
     setUser(newUser);
-    localStorage.setItem('researchmind_auth_status', 'authenticated');
-    localStorage.setItem('researchmind_user', JSON.stringify(newUser));
+    safeStorage.set('researchmind_auth_status', 'authenticated');
+    safeStorage.set('researchmind_user', JSON.stringify(newUser));
     setIsAuthModalOpen(false);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.setItem('researchmind_auth_status', 'unauthenticated');
-    localStorage.removeItem('researchmind_user');
+    safeStorage.set('researchmind_auth_status', 'unauthenticated');
+    safeStorage.remove('researchmind_user');
     setSearchQuery('');
     setActiveTab('Dashboard');
     setIsAuthModalOpen(false);
@@ -226,8 +250,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       role: 'Research Scholar',
     };
     setUser(newUser);
-    localStorage.setItem('researchmind_auth_status', 'authenticated');
-    localStorage.setItem('researchmind_user', JSON.stringify(newUser));
+    safeStorage.set('researchmind_auth_status', 'authenticated');
+    safeStorage.set('researchmind_user', JSON.stringify(newUser));
     setIsAuthModalOpen(false);
   };
 
