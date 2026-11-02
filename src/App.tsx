@@ -86,10 +86,10 @@ const MainApp: React.FC = () => {
 export default function App() {
   React.useEffect(() => {
     (window as any).__RESEARCHMIND_MOUNTED__ = true;
+    const spinner = document.getElementById('initial-spinner');
+    if (spinner) spinner.remove();
     const loader = document.getElementById('app-boot-loader');
-    if (loader) {
-      loader.remove();
-    }
+    if (loader) loader.remove();
   }, []);
 
   return (

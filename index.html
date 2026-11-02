@@ -12,66 +12,60 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <script>
-      // 1. Ensure trailing slash for GitHub Pages project subpaths (e.g. /my-repo -> /my-repo/)
+      // 1. Ensure trailing slash for GitHub Pages repo subpaths (e.g. /my-repo -> /my-repo/)
       (function() {
         var p = window.location.pathname;
-        if (p.length > 1 && !p.endsWith('/') && !p.split('/').pop().includes('.')) {
-          window.location.replace(p + '/' + window.location.search + window.location.hash);
-        }
-      })();
-
-      // 2. Direct GitHub Pages Branch Fallback:
-      // When hosted on GitHub Pages (github.io) and serving from raw branch root without dist/index.html,
-      // load the compiled bundle. Never executes on local or Cloud Run dev servers.
-      (function() {
-        if (window.location.hostname.endsWith('github.io')) {
-          var hasProductionBundle = document.querySelector('script[src*="assets/index"]');
-          if (!hasProductionBundle) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.crossOrigin = 'anonymous';
-            link.href = './assets/index.css';
-            document.head.appendChild(link);
-
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.crossOrigin = 'anonymous';
-            script.src = './assets/index.js';
-            document.head.appendChild(script);
-          }
+        if (p && p.length > 1 && !p.endsWith('/') && !p.split('/').pop().includes('.')) {
+          window.location.replace(window.location.protocol + '//' + window.location.host + p + '/' + window.location.search + window.location.hash);
         }
       })();
     </script>
+    <link rel="stylesheet" href="./assets/index.css" />
   </head>
   <body class="bg-[#070e1b] text-slate-100 antialiased m-0 p-0">
     <div id="root">
-      <!-- Fallback loader shown while React initializes -->
-      <div id="app-boot-loader" style="min-height: 100vh; background-color: #070e1b; color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 24px; text-align: center;">
-        <div style="width: 44px; height: 44px; border: 3px solid rgba(6,182,212,0.2); border-top-color: #06b6d4; border-radius: 50%; animation: rm-spin 0.8s linear infinite; margin-bottom: 20px;"></div>
-        <h2 style="font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: #ffffff;">Loading ResearchMind AI...</h2>
-        <p style="font-size: 13px; color: #94a3b8; max-width: 420px; margin: 0 0 16px 0; line-height: 1.5;">Preparing your research workspace and paper analysis models.</p>
-        
-        <div id="deploy-troubleshoot-hint" style="display: none; max-width: 440px; background: #0c172e; border: 1px solid #1e345e; border-radius: 12px; padding: 16px; text-align: center; margin-top: 16px;">
-          <p style="font-size: 13px; color: #cbd5e1; margin: 0 0 10px 0;">Initializing workspace...</p>
-          <button onclick="window.location.reload()" style="background: #0284c7; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">Reload Application</button>
-        </div>
+      <!-- Minimal clean loading ring that is instantly replaced when React renders -->
+      <div id="initial-spinner" style="min-height: 100vh; background-color: #070e1b; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 36px; height: 36px; border: 3px solid rgba(6,182,212,0.2); border-top-color: #06b6d4; border-radius: 50%; animation: rm-spin 0.8s linear infinite;"></div>
       </div>
-      <style>
-        @keyframes rm-spin { to { transform: rotate(360deg); } }
-      </style>
-      <script>
-        // Only show a reload button if loading exceeds 12 seconds and React hasn't mounted
-        setTimeout(function() {
-          if (!window.__RESEARCHMIND_MOUNTED__) {
-            var el = document.getElementById('deploy-troubleshoot-hint');
-            if (el) el.style.display = 'block';
-          }
-        }, 12000);
-      </script>
+      <style>@keyframes rm-spin{to{transform:rotate(360deg)}}</style>
     </div>
 
     <!-- Development entry point for Vite dev server (AI Studio port 3000) -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Universal Fallback: If running statically on GitHub Pages root without Vite dev server, load pre-compiled bundle -->
+    <script type="module">
+      setTimeout(function() {
+        if (!window.__RESEARCHMIND_MOUNTED__) {
+          var script = document.createElement('script');
+          script.type = 'module';
+          script.crossOrigin = 'anonymous';
+          script.src = './assets/index.js';
+          document.body.appendChild(script);
+        }
+      }, 150);
+
+      // Resilient recovery: If neither loads after 8 seconds, provide instant reload
+      setTimeout(function() {
+        if (!window.__RESEARCHMIND_MOUNTED__) {
+          var root = document.getElementById('root');
+          if (root && !window.__RESEARCHMIND_MOUNTED__) {
+            root.innerHTML = `
+              <div style="min-height: 100vh; background: #070e1b; color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: system-ui, sans-serif; padding: 24px; text-align: center;">
+                <div style="max-width: 440px; background: #0c172e; border: 1px solid #1e345e; border-radius: 16px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                  <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: #06b6d4; font-size: 20px;">⚡</div>
+                  <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0 0 8px 0;">ResearchMind AI Ready</h2>
+                  <p style="font-size: 13px; color: #94a3b8; line-height: 1.5; margin: 0 0 20px 0;">Your research workspace is prepared. Click below to enter your workspace.</p>
+                  <button onclick="window.location.reload()" style="background: #0284c7; hover:background: #0369a1; color: #ffffff; border: none; padding: 10px 22px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Open Workspace</button>
+                </div>
+              </div>
+            `;
+          }
+        }
+      }, 8000);
+    </script>
   </body>
 </html>

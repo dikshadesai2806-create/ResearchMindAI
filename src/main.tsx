@@ -3,11 +3,17 @@ import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
 
+// Immediately signal that the JavaScript application has started
 (window as any).__RESEARCHMIND_MOUNTED__ = true;
 
 const rootElement = document.getElementById('root');
 
 if (rootElement) {
+  // Clean up any initial loading indicator
+  const initialSpinner = document.getElementById('initial-spinner');
+  if (initialSpinner) {
+    initialSpinner.remove();
+  }
   const bootLoader = document.getElementById('app-boot-loader');
   if (bootLoader) {
     bootLoader.remove();
