@@ -21,32 +21,25 @@
         }
       })();
 
-      // 2. Static hosting auto-boot:
-      // When served on GitHub Pages, /src/main.tsx is raw TypeScript and cannot run.
-      // We immediately inject the pre-bundled production CSS and JS.
+      // 2. Direct GitHub Pages Branch Fallback:
+      // When hosted on GitHub Pages (github.io) and serving from raw branch root without dist/index.html,
+      // load the compiled bundle. Never executes on local or Cloud Run dev servers.
       (function() {
-        var isStaticHosting = window.location.hostname.includes('github.io') || 
-                              window.location.protocol === 'file:' || 
-                              (window.location.port !== '3000' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
+        if (window.location.hostname.endsWith('github.io')) {
+          var hasProductionBundle = document.querySelector('script[src*="assets/index"]');
+          if (!hasProductionBundle) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.crossOrigin = 'anonymous';
+            link.href = './assets/index.css';
+            document.head.appendChild(link);
 
-        if (isStaticHosting) {
-          // Pre-load stylesheet
-          var link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.crossOrigin = 'anonymous';
-          link.href = './assets/index.css';
-          document.head.appendChild(link);
-
-          // Pre-load javascript bundle
-          var script = document.createElement('script');
-          script.type = 'module';
-          script.crossOrigin = 'anonymous';
-          script.src = './assets/index.js';
-          script.onload = function() {
-            var loader = document.getElementById('app-boot-loader');
-            if (loader) loader.remove();
-          };
-          document.head.appendChild(script);
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.crossOrigin = 'anonymous';
+            script.src = './assets/index.js';
+            document.head.appendChild(script);
+          }
         }
       })();
     </script>

@@ -9,13 +9,26 @@ const rootElement = document.getElementById('root');
 
 if (rootElement) {
   const bootLoader = document.getElementById('app-boot-loader');
-  if (bootLoader) bootLoader.remove();
+  if (bootLoader) {
+    bootLoader.remove();
+  }
 
-  createRoot(rootElement).render(
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  );
+  const existingRoot = (window as any).__RESEARCHMIND_ROOT__;
+  if (existingRoot) {
+    existingRoot.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+  } else {
+    const root = createRoot(rootElement);
+    (window as any).__RESEARCHMIND_ROOT__ = root;
+    root.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+  }
 } else {
   console.error('Failed to locate root element #root');
 }

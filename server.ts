@@ -22,13 +22,23 @@ async function startServer() {
   // Initialize Gemini AI Client
   const apiKey = process.env.GEMINI_API_KEY;
   let ai: GoogleGenAI | null = null;
-  if (apiKey) {
+  if (apiKey && apiKey.trim().length > 10) {
     try {
       ai = new GoogleGenAI();
     } catch (e) {
       console.warn('GoogleGenAI initialization warning:', e);
     }
   }
+
+  // Helper to prevent external API calls from hanging indefinitely
+  const callWithTimeout = async <T>(promise: Promise<T>, timeoutMs = 8000): Promise<T> => {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error('AI generation request timed out after 8s')), timeoutMs)
+      ),
+    ]);
+  };
 
   // API Route: Ask AI
   app.post('/api/ask-ai', async (req, res) => {
@@ -67,14 +77,14 @@ Format your output in clean text with clear headings or bullet points.`;
 
         contents.push({ text: prompt });
 
-        const response = await ai.models.generateContent({
+        const response = await callWithTimeout(ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents,
           config: {
             maxOutputTokens: 4096,
             temperature: 0.2,
           },
-        });
+        }));
 
         const text = response.text || '';
         return res.json({
@@ -205,14 +215,14 @@ STRICT GUIDELINES:
 
         contents.push({ text: promptText });
 
-        const response = await ai.models.generateContent({
+        const response = await callWithTimeout(ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents,
           config: {
             maxOutputTokens: 8192,
             temperature: 0.2,
           },
-        });
+        }));
 
         const rawText = response.text || '';
 
@@ -365,7 +375,7 @@ Return your response in valid JSON matching this schema:
 
 Do not invent facts. Ensure valid JSON output only.`;
 
-        const response = await ai.models.generateContent({
+        const response = await callWithTimeout(ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents: [{ text: prompt }],
           config: {
@@ -373,7 +383,7 @@ Do not invent facts. Ensure valid JSON output only.`;
             temperature: 0.2,
             responseMimeType: 'application/json',
           },
-        });
+        }));
 
         const text = response.text || '';
         try {
