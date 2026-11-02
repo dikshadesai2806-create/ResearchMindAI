@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
       // 1. Ensure trailing slash for GitHub Pages project subpaths (e.g. /my-repo -> /my-repo/)
-      // Without trailing slash, relative assets like ./assets/xxx.js 404 on GitHub Pages.
       (function() {
         var p = window.location.pathname;
         if (p.length > 1 && !p.endsWith('/') && !p.split('/').pop().includes('.')) {
@@ -22,57 +21,64 @@
         }
       })();
 
-      // 2. Catch uncaught script or network loading errors
-      window.addEventListener('error', function(e) {
-        console.error('Captured resource or script error:', e);
-      });
+      // 2. Static hosting auto-boot:
+      // When served on GitHub Pages, /src/main.tsx is raw TypeScript and cannot run.
+      // We immediately inject the pre-bundled production CSS and JS.
+      (function() {
+        var isStaticHosting = window.location.hostname.includes('github.io') || 
+                              window.location.protocol === 'file:' || 
+                              (window.location.port !== '3000' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
+
+        if (isStaticHosting) {
+          // Pre-load stylesheet
+          var link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.crossOrigin = 'anonymous';
+          link.href = './assets/index.css';
+          document.head.appendChild(link);
+
+          // Pre-load javascript bundle
+          var script = document.createElement('script');
+          script.type = 'module';
+          script.crossOrigin = 'anonymous';
+          script.src = './assets/index.js';
+          script.onload = function() {
+            var loader = document.getElementById('app-boot-loader');
+            if (loader) loader.remove();
+          };
+          document.head.appendChild(script);
+        }
+      })();
     </script>
   </head>
   <body class="bg-[#070e1b] text-slate-100 antialiased m-0 p-0">
     <div id="root">
-      <!-- Fallback loader shown while React initializes or if script loading fails -->
+      <!-- Fallback loader shown while React initializes -->
       <div id="app-boot-loader" style="min-height: 100vh; background-color: #070e1b; color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 24px; text-align: center;">
         <div style="width: 44px; height: 44px; border: 3px solid rgba(6,182,212,0.2); border-top-color: #06b6d4; border-radius: 50%; animation: rm-spin 0.8s linear infinite; margin-bottom: 20px;"></div>
         <h2 style="font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: #ffffff;">Loading ResearchMind AI...</h2>
         <p style="font-size: 13px; color: #94a3b8; max-width: 420px; margin: 0 0 16px 0; line-height: 1.5;">Preparing your research workspace and paper analysis models.</p>
         
-        <div id="deploy-troubleshoot-hint" style="display: none; max-width: 500px; background: #0c172e; border: 1px solid #1e345e; border-radius: 14px; padding: 20px; text-align: left; margin-top: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span style="font-size: 16px;">💡</span>
-            <h3 style="font-size: 14px; font-weight: 700; color: #38bdf8; margin: 0;">GitHub Pages Deployment Guide</h3>
-          </div>
-          <p style="font-size: 12px; color: #cbd5e1; margin: 0 0 10px 0; line-height: 1.5;">If the application doesn't load within a few seconds on GitHub Pages, verify your repository settings:</p>
-          <ol style="font-size: 12px; color: #94a3b8; padding-left: 20px; margin: 0 0 14px 0; line-height: 1.6;">
-            <li>Go to your GitHub repository <strong>Settings &gt; Pages</strong></li>
-            <li>Under <strong>Source</strong>, choose <strong>GitHub Actions</strong> (automatically builds your app)</li>
-            <li>Alternatively, run <code>npm run deploy</code> in your terminal and set Source branch to <strong>gh-pages</strong></li>
-            <li>Avoid selecting branch <em>main</em> with folder <em>/ (root)</em>, as browsers cannot run uncompiled TypeScript directly.</li>
-          </ol>
-          <div id="deploy-err-detail" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-bottom: 12px; word-break: break-all; font-family: monospace;"></div>
-          <button onclick="window.location.reload()" style="background: #0284c7; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">Reload Application</button>
+        <div id="deploy-troubleshoot-hint" style="display: none; max-width: 440px; background: #0c172e; border: 1px solid #1e345e; border-radius: 12px; padding: 16px; text-align: center; margin-top: 16px;">
+          <p style="font-size: 13px; color: #cbd5e1; margin: 0 0 10px 0;">Initializing workspace...</p>
+          <button onclick="window.location.reload()" style="background: #0284c7; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">Reload Application</button>
         </div>
       </div>
       <style>
         @keyframes rm-spin { to { transform: rotate(360deg); } }
       </style>
       <script>
-        // Only display troubleshoot guidance if loading takes excessive time (> 6s) or if a script error occurs
-        var fallbackTimer = setTimeout(function() {
-          var el = document.getElementById('deploy-troubleshoot-hint');
-          if (el) el.style.display = 'block';
-        }, 7000);
-
-        window.addEventListener('error', function(e) {
-          var el = document.getElementById('deploy-troubleshoot-hint');
-          var errDetail = document.getElementById('deploy-err-detail');
-          if (el) el.style.display = 'block';
-          if (errDetail && e && (e.message || e.filename)) {
-            errDetail.textContent = 'Detected Error: ' + (e.message || 'Script resource failed to load (' + (e.filename || 'asset') + ')');
-            errDetail.style.display = 'block';
+        // Only show a reload button if loading exceeds 12 seconds and React hasn't mounted
+        setTimeout(function() {
+          if (!window.__RESEARCHMIND_MOUNTED__) {
+            var el = document.getElementById('deploy-troubleshoot-hint');
+            if (el) el.style.display = 'block';
           }
-        });
+        }, 12000);
       </script>
     </div>
+
+    <!-- Development entry point for Vite dev server (AI Studio port 3000) -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
